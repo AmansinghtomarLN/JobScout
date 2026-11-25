@@ -1,0 +1,33 @@
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/jobscout}
+    username: ${DB_USER:jobscout}
+    password: ${DB_PASSWORD:jobscout}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate.jdbc.time_zone: UTC
+  jackson:
+    default-property-inclusion: non_null
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
+jobscout:
+  workbook:
+    source: ${WORKBOOK_SOURCE:local}          # local | drive
+    local-path: ${WORKBOOK_PATH:./config/jobscout-config.xlsx}
+    drive-file-id: ${DRIVE_FILE_ID:}
+    credentials-path: ${GOOGLE_CREDENTIALS_PATH:}
+  engine:
+    max-concurrent-tasks: 3
+    max-tasks-per-domain: 1
+    headless: true
+    default-retries: 2
+    honor-robots: true
+    user-agent: ${BOT_USER_AGENT:JobScoutBot/0.1}

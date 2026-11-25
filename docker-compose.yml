@@ -1,0 +1,22 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: jobscout
+      POSTGRES_USER: jobscout
+      POSTGRES_PASSWORD: jobscout
+    ports: ["5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+  app:
+    build: .
+    depends_on: [db]
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/jobscout
+      DB_USER: jobscout
+      DB_PASSWORD: jobscout
+      WORKBOOK_SOURCE: local            # set to "drive" + DRIVE_FILE_ID + GOOGLE_CREDENTIALS_PATH for Google Drive
+      WORKBOOK_PATH: /app/config/jobscout-config.xlsx
+    volumes: ["./config:/app/config"]
+    ports: ["8080:8080"]
+volumes:
+  pgdata:

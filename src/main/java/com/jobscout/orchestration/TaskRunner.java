@@ -5,7 +5,7 @@ import com.jobscout.common.JobScoutException;
 import com.jobscout.config.JobScoutProperties;
 import com.jobscout.configuration.model.ConfigModel.CompanyConfig;
 import com.jobscout.engine.EngineResult;
-import com.jobscout.engine.PlaywrightJobEngine;
+import com.jobscout.engine.JobSourceRouter;
 import com.jobscout.engine.RawJob;
 import com.jobscout.engine.TaskContext;
 import com.jobscout.normalization.JobDraft;
@@ -29,14 +29,14 @@ import org.springframework.stereotype.Component;
 public class TaskRunner {
     private static final Logger log = LoggerFactory.getLogger(TaskRunner.class);
 
-    private final PlaywrightJobEngine engine;
+    private final JobSourceRouter engine;
     private final JobNormalizer normalizer;
     private final JobStore store;
     private final CompanyTaskRepository tasks;
     private final ExecutionEventRepository events;
     private final JobScoutProperties props;
 
-    public TaskRunner(PlaywrightJobEngine engine, JobNormalizer normalizer, JobStore store,
+    public TaskRunner(JobSourceRouter engine, JobNormalizer normalizer, JobStore store,
                       CompanyTaskRepository tasks, ExecutionEventRepository events, JobScoutProperties props) {
         this.engine = engine;
         this.normalizer = normalizer;

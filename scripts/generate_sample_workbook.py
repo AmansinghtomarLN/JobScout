@@ -33,7 +33,10 @@ sheet(ws, ["company_id", "company_name", "career_url", "enabled", "interaction_t
            "date_format", "notes"],
       [["AUTODESK", "Autodesk",
         "https://jobs.autodesk.com/careers?query=${keyword}&location=${location}&sort_by=timestamp",
-        True, "PLAYWRIGHT", "JAVA_INDIA_7D", 10, 300, 30, 1500, "GENERIC", "Asia/Kolkata", "", UNVERIFIED]],
+        True, "PLAYWRIGHT", "JAVA_INDIA_7D", 10, 300, 30, 1500, "GENERIC", "Asia/Kolkata", "", UNVERIFIED],
+       ["GREENHOUSE_EXAMPLE", "Example (Greenhouse board)", "https://boards.greenhouse.io/<board_token>",
+        False, "API", "JAVA_INDIA_7D", 1, 300, 30, 1500, "GREENHOUSE", "Asia/Kolkata", "",
+        "API adapter: replace <board_token>, set enabled TRUE. No selectors needed. Also: LEVER (https://jobs.lever.co/<company>)"]],
       {"career_url": 70, "notes": 60})
 
 ws = wb.create_sheet("SearchProfiles")
@@ -69,6 +72,7 @@ for line in [
     "selector 'self' (ExtractionFields) means the result card element itself (e.g. the card is the <a>).",
     "ROLE selectors use the format role[:accessible name], e.g. button:Search.",
     "Autodesk row: " + UNVERIFIED + ".",
+    "adapter_key GREENHOUSE or LEVER uses the platform public API: only career_url + search profile are needed (no selector sheets).",
     "Do not store passwords, cookies or tokens in this file.",
 ]:
     ws.append([line])

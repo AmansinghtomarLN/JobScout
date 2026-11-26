@@ -30,17 +30,20 @@ public class RunService {
     private final CompanyTaskRepository tasks;
     private final ExecutorService executor;
     private final JobScoutProperties props;
+    private final DigestNotifier notifier;
     private final Map<String, Semaphore> domainLocks = new ConcurrentHashMap<>();
     private final Set<Long> cancelledRuns = ConcurrentHashMap.newKeySet();
 
     public RunService(ConfigService config, TaskRunner runner, ExecutionRunRepository runs, CompanyTaskRepository tasks,
-                      @Qualifier("jobExecutor") ExecutorService executor, JobScoutProperties props) {
+                      @Qualifier("jobExecutor") ExecutorService executor, JobScoutProperties props,
+                      DigestNotifier notifier) {
         this.config = config;
         this.runner = runner;
         this.runs = runs;
         this.tasks = tasks;
         this.executor = executor;
         this.props = props;
+        this.notifier = notifier;
     }
 
     /** Anything left RUNNING/QUEUED by a previous process was interrupted. */
@@ -149,7 +152,9 @@ public class RunService {
         else if (failed > 0 || partial > 0) run.status = Statuses.PARTIAL;
         else run.status = Statuses.SUCCEEDED;
         run.summary = ts.size() + " companies, " + failed + " failed, " + partial + " partial";
-        return runs.save(run);
+        run = runs.save(run);
+        notifier.notifyRun(run);
+        return run;
     }
 
     public void cancel(long runId) {

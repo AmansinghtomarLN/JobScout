@@ -31,3 +31,9 @@ jobscout:
     default-retries: 2
     honor-robots: true
     user-agent: ${BOT_USER_AGENT:JobScoutBot/0.1}
+  schedule:
+    enabled: ${SCHEDULE_ENABLED:false}
+    cron: ${SCHEDULE_CRON:0 0 7 * * *}
+    zone: Asia/Kolkata
+  notify:
+    slack-webhook-url: ${SLACK_WEBHOOK_URL:}

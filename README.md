@@ -41,5 +41,10 @@ Extraction selector `self` = the result card itself. ROLE selectors: `role[:name
 - Dedup: `company + external id` -> `company + canonical URL` -> `company + title + location`.
 - Each run references the config snapshot (id + checksum) it used. Parsed snapshots are held in memory, so retry-with-same-snapshot needs the app to have been up since that sync.
 
+## Adapters, scheduling, alerts
+- `adapter_key` GREENHOUSE / LEVER: uses the platform's public job-board API (put the board URL in `career_url`; no selectors needed). Keyword and location are filtered client-side. Any other value falls back to the generic Playwright engine. Add a platform by implementing `JobSource`.
+- Scheduler: `SCHEDULE_ENABLED=true` (cron `SCHEDULE_CRON`, default 07:00 Asia/Kolkata) syncs the workbook and runs all enabled companies. Run a single instance.
+- Slack digest of new jobs after each run: set `SLACK_WEBHOOK_URL`.
+
 ## Not included yet
-React UI, `API` interaction type, site adapters (`adapter_key` other than GENERIC is ignored with a warning), SSE/WebSocket updates, roles.
+React UI, Eightfold/Workday adapters (internal endpoints - check site terms first), distributed scheduler lock, SSE/WebSocket updates, roles.

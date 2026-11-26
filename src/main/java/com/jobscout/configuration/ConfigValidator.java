@@ -12,6 +12,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class ConfigValidator {
 
+    /** Adapter keys handled by API sources (no selectors needed). Keep in sync with JobSource implementations. */
+    private static final Set<String> API_ADAPTERS = Set.of("GREENHOUSE", "LEVER");
+
     public List<ConfigIssue> validate(List<CompanyConfig> companies) {
         List<ConfigIssue> out = new ArrayList<>();
         for (CompanyConfig c : companies) {
@@ -26,11 +29,13 @@ public class ConfigValidator {
             if (c.interactionType() == InteractionType.API) {
                 err(out, id, "Companies", "interaction_type API is not implemented in this build (PLAYWRIGHT only)");
             }
-            if (c.adapterKey() != null && !c.adapterKey().equalsIgnoreCase("GENERIC")) {
-                out.add(new ConfigIssue(Severity.WARN, id, "Companies", "adapter_key '" + c.adapterKey() + "' ignored (no adapters registered)"));
-            }
+            String adapter = c.adapterKey() == null ? "GENERIC" : c.adapterKey().trim().toUpperCase(Locale.ROOT);
             if (c.profile() == null) {
                 err(out, id, "SearchProfiles", "search_profile_id '" + c.searchProfileId() + "' not found");
+            }
+            if (API_ADAPTERS.contains(adapter)) continue;      // API adapters need only URL + profile
+            if (!adapter.equals("GENERIC")) {
+                out.add(new ConfigIssue(Severity.WARN, id, "Companies", "adapter_key '" + c.adapterKey() + "' unknown; using Playwright"));
             }
             PaginationConfig pg = c.pagination();
             if (pg.resultCardSelector() == null) {

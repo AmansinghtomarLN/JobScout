@@ -26,10 +26,10 @@ public class ConfigValidator {
                 try { URI.create(c.careerUrl().replace("${", "x").replace("}", "")); }
                 catch (IllegalArgumentException e) { err(out, id, "Companies", "career_url is not a valid URI"); }
             }
-            if (c.interactionType() == InteractionType.API) {
+            String adapter = c.adapterKey() == null ? "GENERIC" : c.adapterKey().trim().toUpperCase(Locale.ROOT);
+            if (c.interactionType() == InteractionType.API && !API_ADAPTERS.contains(adapter)) {
                 err(out, id, "Companies", "interaction_type API is not implemented in this build (PLAYWRIGHT only)");
             }
-            String adapter = c.adapterKey() == null ? "GENERIC" : c.adapterKey().trim().toUpperCase(Locale.ROOT);
             if (c.profile() == null) {
                 err(out, id, "SearchProfiles", "search_profile_id '" + c.searchProfileId() + "' not found");
             }
